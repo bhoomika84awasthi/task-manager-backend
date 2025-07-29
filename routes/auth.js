@@ -24,6 +24,9 @@ router.post('/register', async (req, res) => {
 });
 
 // POST /api/auth/login
+
+
+//your routes is much bigger you need to use controllers and write you all logic in there and just call function from there when request come 
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
