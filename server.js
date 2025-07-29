@@ -8,11 +8,7 @@ const taskRoutes = require('./routes/tasks');
 dotenv.config();
 const app = express();
 
-// ✅ CORS configuration
-const allowedOrigins = [
-  "https://task-manager-frontend-five-liart.vercel.app",  // ✅ your Vercel URL
-  "http://localhost:3000" // ✅ for local dev (optional)
-];
+
 
 app.use(cors());
 
