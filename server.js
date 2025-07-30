@@ -9,26 +9,38 @@ const taskRoutes = require('./routes/tasks');
 dotenv.config();
 const app = express();
 
-// FIXED: CORS setup (accepts from your Vercel frontend)
+// ✅ CORS Setup
+const allowedOrigins = ['https://task-manager-frontend-five-liart.vercel.app'];
+
 app.use(cors({
-  origin: 'https://task-manager-frontend-five-liart.vercel.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
 }));
+
+app.options('*', cors()); // ✅ THIS HANDLES PREFLIGHT (OPTIONS) REQUESTS
 
 app.use(express.json());
 
-// Routes
+// ✅ API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 
-// DB Connect & Start Server
+// ✅ DB and Server Init
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
-.then(() => app.listen(process.env.PORT || 5000, () => {
-  console.log("Server running on port", process.env.PORT || 5000);
-}))
-.catch((err) => console.error("MongoDB connection error:", err));
+.then(() => {
+  app.listen(process.env.PORT || 5000, () => {
+    console.log('Server running on port', process.env.PORT || 5000);
+  });
+})
+.catch(err => console.error('MongoDB error:', err));
+
 
