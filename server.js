@@ -1,18 +1,16 @@
 const express = require('express');
-const mongoose = require('mongoose');
-
-const dotenv = require('dotenv');
-const authRoutes = require('./routes/auth');
-const taskRoutes = require('./routes/tasks');
-
-dotenv.config();
 const cors = require('cors');
+const dotenv = require('dotenv');
+
+dotenv.config();              // ✅ Load .env config first
+const app = express();        // ✅ Make sure this line comes BEFORE using app.use()
 
 const allowedOrigins = [
   'http://localhost:3000',
   'https://task-manager-frontend-five-liart.vercel.app'
 ];
 
+// ✅ Set up CORS BEFORE routes
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -25,13 +23,17 @@ app.use(cors({
   credentials: true
 }));
 
+app.use(express.json()); // ✅ Middlewares come next
 
-
-app.use(express.json());
-app.options('*', cors()); // Allow preflight requests
+// Your routes
+const authRoutes = require('./routes/auth');
+const taskRoutes = require('./routes/tasks');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
+
+// MongoDB connection and app.listen() should go after
+
 
 // ✅ MongoDB connection
 mongoose.connect(process.env.MONGO_URI, {
