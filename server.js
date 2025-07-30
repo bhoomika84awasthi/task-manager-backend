@@ -10,24 +10,25 @@ dotenv.config();
 const app = express();
 
 // ✅ CORS setup with fallback for local + production frontend
+
 const allowedOrigins = [
-  'http://localhost:3000',
-  'https://task-manager-frontend-five-liart.vercel.app'
+  'https://task-manager-frontend-five-liart.vercel.app' // Your Vercel frontend
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (like Postman or curl)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      console.error('Blocked by CORS:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+app.options('*', cors());
 
 // ✅ Parse JSON body
 app.use(express.json());
