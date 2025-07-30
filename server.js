@@ -9,6 +9,7 @@ dotenv.config();
 
 const app = express();
 
+// ✅ CORS setup with fallback for local + production frontend
 const allowedOrigins = [
   'http://localhost:3000',
   'https://task-manager-frontend-five-liart.vercel.app'
@@ -16,9 +17,11 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
+    // Allow requests with no origin (like Postman or curl)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.error('Blocked by CORS:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -26,24 +29,26 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 }));
 
+// ✅ Parse JSON body
 app.use(express.json());
 
+// ✅ API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 
+// ✅ MongoDB connection
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => {
-  console.log('MongoDB connected');
+  console.log('✅ MongoDB connected');
 
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`🚀 Server running on port ${PORT}`);
   });
 
 }).catch((err) => {
-  console.error('MongoDB connection error:', err);
+  console.error('❌ MongoDB connection error:', err.message);
 });
-
 
