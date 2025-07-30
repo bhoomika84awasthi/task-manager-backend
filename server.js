@@ -1,12 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
+
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/auth');
 const taskRoutes = require('./routes/tasks');
 
 dotenv.config();
-const app = express();
+const cors = require('cors');
+
 const allowedOrigins = [
   'http://localhost:3000',
   'https://task-manager-frontend-five-liart.vercel.app'
@@ -17,15 +18,17 @@ app.use(cors({
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('CORS not allowed'));
+      callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true
 }));
 
 
+
 app.use(express.json());
+app.options('*', cors()); // Allow preflight requests
 
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
