@@ -18,6 +18,9 @@ app.use(cors({
   origin: allowedOrigins,
   credentials: true
 }));
+app.get('/api/ping', (req, res) => {
+  res.send('pong');
+});
 
 
 app.use(express.json());
