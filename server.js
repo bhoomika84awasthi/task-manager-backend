@@ -7,20 +7,22 @@ const taskRoutes = require('./routes/tasks');
 
 dotenv.config();
 const app = express();
-
-// ✅ CORS config
 const allowedOrigins = [
   'http://localhost:3000',
   'https://task-manager-frontend-five-liart.vercel.app'
 ];
 
 app.use(cors({
-  origin: allowedOrigins,
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS not allowed'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
-app.get('/api/ping', (req, res) => {
-  res.send('pong');
-});
 
 
 app.use(express.json());
