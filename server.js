@@ -9,12 +9,16 @@ dotenv.config();
 const app = express();
 
 // ✅ CORS config
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://task-manager-frontend-five-liart.vercel.app'
+];
+
 app.use(cors({
-  origin: 'https://task-manager-frontend-five-liart.vercel.app',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: allowedOrigins,
+  credentials: true
 }));
+
 
 app.use(express.json());
 
